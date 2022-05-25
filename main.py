@@ -1,16 +1,37 @@
-# This is a sample Python script.
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import matplotlib.pyplot as plt
+import numpy as np
+
+from pandas import read_csv
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+url = "winequality-red.csv"
+names = ['total sulfur dioxide','fixed acidity', 'volatile acidity', 'citric acid', 'chlorides', 'residual sugar',
+         'pH',  'density', 'free sulfur dioxide', 'alcohol', 'sulphates', 'quality']
+dataset = read_csv(url, usecols=names)
+
+array = dataset.values
+
+X = array[:,0:10]
+y = array[:,10]
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+X_train, X_validation, Y_train, Y_validation = train_test_split(X, y, test_size=0.20, random_state=1)
+
+model = LinearRegression()
+model.fit(X_train, Y_train)
+predictions = model.predict(X_validation)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+for i in range(len(predictions)):
+    print(predictions[i], '-||-', Y_validation[i])
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+score = model.score(X_validation, Y_validation)
+print(score*100, '%')
+plotter = X_validation[:,1]
+plt.scatter(plotter, Y_validation, color='black')
+#plt.plot(plotter, predictions, color='blue', linewidth=3)
+plt.xticks(())
+plt.yticks(())
+plt.show()
+
